@@ -4,6 +4,12 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 
+import java.util.Vector;
+
+import client.MyCivGui;
+
+import model.Unit;
+
 public class Client
 {
 	private Socket server;
@@ -26,28 +32,20 @@ public class Client
 		server.close();
 	}
 
-	private class ServerInputCatcher extends Thread
+	public void sendUnit(Unit unit) throws IOException
 	{
-		public ServerInputCatcher(String name)
-		{
-			super(name);
-		}
+		os.writeObject(unit);
+	}
 
-		public void run()
+	public Vector<Unit> getUnits()
+	{
+		try
 		{
-			while(true)
-			{
-				try
-				{
-					String test = (String)is.readObject();
-					System.out.println(test);
-				}
-				catch(ClassNotFoundException |IOException e)
-				{
-					System.out.println("Server Connection Lost...");
-					break;
-				}
-			}
+			return (Vector<Unit>)is.readObject();
+		}
+		catch(ClassNotFoundException |IOException e)
+		{
+			System.out.println("Server Connection Lost...");
 		}
 	}
 }

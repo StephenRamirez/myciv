@@ -9,6 +9,11 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 
 import java.util.Scanner;
+import java.util.Vector;
+
+import client.World;
+
+import model.Unit;
 
 public class Server
 {
@@ -18,6 +23,9 @@ public class Server
 	private ArrayList<ObjectOutputStream> outputConnections;
 	private ArrayList<ObjectInputStream> inputConnections;
 
+	private Vector<Unit> units;
+	private final World world;
+
 	public static final int PORT_NUM = 8000;
 
 	public Server() throws UnknownHostException, IOException
@@ -26,7 +34,26 @@ public class Server
 		clients = new ArrayList<>();
 		outputConnections = new ArrayList<>();
 		inputConnections = new ArrayList<>();
+
+		units = new Vector<>();
+		world = World.getWorld();
+
 		new ClientAcceptor("Client Acceptor").start();
+	}
+
+	private void sendUnits()
+	{
+		for(ObjectOutputStream output : outputConnections)
+		{
+			try
+			{
+				output.writeObject(units);
+			}
+			catch(IOException e)
+			{
+				System.out.println("Error Sending Message To Client!");
+			}
+		}
 	}
 
 	private synchronized void killClient(Socket client) throws IOException
@@ -75,8 +102,7 @@ public class Server
 			{
 				try
 				{
-					String test = (String)is.readObject();
-					System.out.println(test);
+					world.addUnit(((Unit)is.readObject()));
 				}
 				catch(ClassNotFoundException |IOException e)
 				{
@@ -104,10 +130,11 @@ public class Server
 					Socket player = server.accept();
 					clients.add(player);
 					outputConnections.add(new ObjectOutputStream(player.getOutputStream()));
+					
 					ObjectInputStream is = new ObjectInputStream(player.getInputStream());
 					inputConnections.add(is);
-
 					new ClientInputCatcher("Client Input Catcher",player,is);
+					
 					System.out.println("Player Connected...");
 				}
 				catch(IOException e)
@@ -115,6 +142,23 @@ public class Server
 					System.out.println("Server Connection Closed...");
 					break;
 				}
+			}
+		}
+	}
+
+	private class ServerTicker extends Thread
+	{
+		public ServerTicker(String name)
+		{
+			super(name);
+		}
+
+		public void run()
+		{
+			while(true)
+			{
+				Thread.sleep(1000);
+				sendUnits();
 			}
 		}
 	}

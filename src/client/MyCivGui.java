@@ -10,12 +10,6 @@ public class MyCivGui extends JFrame
 	private JPanel view;
 	private int width, height;
 
-	public static void main(String[] args)
-	{
-		MyCivGui gui = new MyCivGui();
-		gui.setVisible(true);
-	}
-
 	public MyCivGui()
 	{
 		width = 1000;
@@ -24,6 +18,8 @@ public class MyCivGui extends JFrame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(width,height);
 		this.setLocation(100,100);
+
+		setView(new MapGui(width,height));
 	}
 
 	private void setView(JPanel nextView)

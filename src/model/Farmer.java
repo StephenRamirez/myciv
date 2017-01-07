@@ -1,8 +1,6 @@
-import javafx.scene.shape.Circle;
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
+import java.awt.Color;
 
 import java.util.Random;
 
@@ -29,7 +27,7 @@ public class Farmer extends Unit
 	public void draw(Graphics2D g)
 	{
 		g.setPaint(Color.YELLOW);
-		g.fillOval(x,y,radius,radius);
+		g.fillOval(cords.x,cords.y,radius,radius);
 	}
 
 	public void move(int dx, int dy)
@@ -46,9 +44,9 @@ public class Farmer extends Unit
 			move(1,0);
 		else if(cords.y == 0)
 			move(0,1);
-		else if(cords.x == Wold.BOUNDS)
+		else if(cords.x == World.BOUNDS)
 			move(-1,0);
-		else if(cords.y == Wold.BOUNDS)
+		else if(cords.y == World.BOUNDS)
 			move(0,-1);
 		else
 			move(rand.nextInt(2),rand.nextInt(2));

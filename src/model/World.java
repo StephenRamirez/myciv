@@ -1,11 +1,13 @@
 import java.util.Vector;
 import java.util.Collections;
 
+import java.util.Observable;
+
 public class World extends Observable
 {
 	public static int BOUNDS = 1000000;
 
-	private World singleton = null;
+	private static World singleton = null;
 
 	public Vector<Unit> units;
 	public int size;
@@ -57,8 +59,15 @@ public class World extends Observable
 		{
 			while(true)
 			{
-				Thread.sleep(1000000);
-				ballz();
+				try
+				{
+					Thread.sleep(1000000);
+					ballz();
+				}
+				catch(InterruptedException e)
+				{
+					System.out.println("Something has gone very wrong...");
+				}
 			}
 		}
 	}
