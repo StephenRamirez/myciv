@@ -15,7 +15,7 @@ import client.World;
 
 import model.Unit;
 
-public class Server
+public class Server implements Observer
 {
 	private ServerSocket server;
 
@@ -39,6 +39,11 @@ public class Server
 		world = World.getWorld();
 
 		new ClientAcceptor("Client Acceptor").start();
+	}
+
+	private void update(Observable o, Object arg)
+	{
+		sendUnits();
 	}
 
 	private void sendUnits()
@@ -142,23 +147,6 @@ public class Server
 					System.out.println("Server Connection Closed...");
 					break;
 				}
-			}
-		}
-	}
-
-	private class ServerTicker extends Thread
-	{
-		public ServerTicker(String name)
-		{
-			super(name);
-		}
-
-		public void run()
-		{
-			while(true)
-			{
-				Thread.sleep(1000);
-				sendUnits();
 			}
 		}
 	}

@@ -1,0 +1,9 @@
+<project name="myciv" default="dist" basedir=".">
+
+	<description>
+		This is the make file for the myciv java src folder
+	</description>
+
+	
+
+</project>
